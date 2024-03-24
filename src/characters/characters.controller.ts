@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CharactersService } from './characters.service';
 import { CreateCharacterDto } from './dto/create-character.dto';
@@ -29,6 +30,14 @@ export class CharactersController {
   @Get(':id')
   findOne(@Param('id') id: string): Character {
     return this.charactersService.findOne(id);
+  }
+
+  @Get(':id/fight')
+  fight(
+    @Param('id') characterId: string,
+    @Query('versus') versusId: string,
+  ): Character {
+    return this.charactersService.fight(characterId, versusId);
   }
 
   @Patch(':id')

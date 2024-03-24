@@ -12,11 +12,11 @@ export class CharactersService {
     this.characters = this.characters.concat(createCharacterDto);
   }
 
-  public findAll() {
+  public findAll(): Character[] {
     return this.characters;
   }
 
-  public findOne(id: string) {
+  public findOne(id: string): Character {
     return this.characters.find((character) => character.id === id);
   }
 
@@ -33,5 +33,14 @@ export class CharactersService {
     this.characters = this.characters.filter(
       (character) => character.id !== id,
     );
+  }
+
+  public fight(characterId: string, versusId: string): Character {
+    const character1 = this.findOne(characterId);
+    const character2 = this.findOne(versusId);
+
+    debugger;
+    const winner = Math.random() * 100 < 50 ? character1 : character2;
+    return winner;
   }
 }
