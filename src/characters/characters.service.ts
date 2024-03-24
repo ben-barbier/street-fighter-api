@@ -1,26 +1,37 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
+import { Character } from './entities/character.entity';
+import { characters } from './characters.data';
 
 @Injectable()
 export class CharactersService {
-  create(createCharacterDto: CreateCharacterDto) {
-    return 'This action adds a new character';
+  private characters: Character[] = characters();
+
+  public create(createCharacterDto: CreateCharacterDto): void {
+    this.characters = this.characters.concat(createCharacterDto);
   }
 
-  findAll() {
-    return `This action returns all characters`;
+  public findAll() {
+    return this.characters;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} character`;
+  public findOne(id: string) {
+    return this.characters.find((character) => character.id === id);
   }
 
-  update(id: number, updateCharacterDto: UpdateCharacterDto) {
-    return `This action updates a #${id} character`;
+  public update(id: string, updateCharacterDto: UpdateCharacterDto): void {
+    this.characters = this.characters.map((character) => {
+      if (character.id === updateCharacterDto.id) {
+        return { ...character, ...updateCharacterDto };
+      }
+      return character;
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} character`;
+  public remove(id: string): void {
+    this.characters = this.characters.filter(
+      (character) => character.id !== id,
+    );
   }
 }

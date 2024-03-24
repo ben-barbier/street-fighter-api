@@ -1,1 +1,4 @@
-export class Country {}
+export interface Country {
+  name: string;
+  flagUrl: string;
+}
