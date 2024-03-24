@@ -1,26 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
+import { Country } from './entities/country.entity';
+import { countries } from './countries.data';
 
 @Injectable()
 export class CountriesService {
-  create(createCountryDto: CreateCountryDto) {
-    return 'This action adds a new country';
+  private countries: Country[] = countries();
+
+  public create(createCountryDto: CreateCountryDto): void {
+    this.countries = this.countries.concat(createCountryDto);
   }
 
-  findAll() {
-    return `This action returns all countries`;
+  public findAll(): Country[] {
+    return this.countries;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} country`;
+  public findOne(name: string): Country {
+    return this.countries.find((country) => country.name === name);
   }
 
-  update(id: number, updateCountryDto: UpdateCountryDto) {
-    return `This action updates a #${id} country`;
+  public update(id: number, updateCountryDto: UpdateCountryDto): void {
+    this.countries = this.countries.map((country) => {
+      if (country.name === updateCountryDto.name) {
+        return { ...country, ...updateCountryDto };
+      }
+      return country;
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} country`;
+  public remove(name: string): void {
+    this.countries = this.countries.filter((country) => country.name !== name);
   }
 }

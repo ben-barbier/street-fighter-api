@@ -1,1 +1,4 @@
-export class CreateCountryDto {}
+export class CreateCountryDto {
+  name: string;
+  flagUrl: string;
+}
