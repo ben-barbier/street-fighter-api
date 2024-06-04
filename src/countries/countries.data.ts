@@ -1,7 +1,7 @@
 import { Country } from './entities/country.entity';
 
 export const countries = (): Country[] => [
-  { name: 'Japan', flagUrl: '/assets/countries/France.svg' },
+  { name: 'Japan', flagUrl: '/assets/countries/Japan.svg' },
   { name: 'USA', flagUrl: '/assets/countries/USA.svg' },
   { name: 'UK', flagUrl: '/assets/countries/UK.svg' },
   { name: 'None', flagUrl: '/assets/countries/None.svg' },
