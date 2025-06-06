@@ -27,7 +27,7 @@ export class CountriesController {
   }
 
   @Get(':name')
-  findOne(@Param('name') name: string): Country {
+  findOne(@Param('name') name: string): Country | undefined {
     return this.countriesService.findOne(name);
   }
 

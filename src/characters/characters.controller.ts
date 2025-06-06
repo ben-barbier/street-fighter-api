@@ -28,7 +28,7 @@ export class CharactersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Character {
+  findOne(@Param('id') id: string): Character | undefined {
     return this.charactersService.findOne(id);
   }
 
@@ -36,7 +36,7 @@ export class CharactersController {
   fight(
     @Param('id') characterId: string,
     @Query('versus') versusId: string,
-  ): Character {
+  ): Character | undefined {
     return this.charactersService.fight(characterId, versusId);
   }
 

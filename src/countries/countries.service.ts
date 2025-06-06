@@ -16,7 +16,7 @@ export class CountriesService {
     return this.countries;
   }
 
-  public findOne(name: string): Country {
+  public findOne(name: string): Country | undefined {
     return this.countries.find((country) => country.name === name);
   }
 
