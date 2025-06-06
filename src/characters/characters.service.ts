@@ -16,7 +16,7 @@ export class CharactersService {
     return this.characters;
   }
 
-  public findOne(id: string): Character {
+  public findOne(id: string): Character | undefined {
     return this.characters.find((character) => character.id === id);
   }
 
@@ -35,12 +35,10 @@ export class CharactersService {
     );
   }
 
-  public fight(characterId: string, versusId: string): Character {
+  public fight(characterId: string, versusId: string): Character | undefined {
     const character1 = this.findOne(characterId);
     const character2 = this.findOne(versusId);
 
-    debugger;
-    const winner = Math.random() * 100 < 50 ? character1 : character2;
-    return winner;
+    return Math.random() * 100 < 50 ? character1 : character2;
   }
 }
