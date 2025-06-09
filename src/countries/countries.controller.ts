@@ -1,8 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -44,31 +48,60 @@ export class CountriesController {
     description: 'Détails du pays',
     type: CountryDto,
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Pays non trouvé',
+  })
   @Get(':name')
-  findOne(@Param('name') name: string): CountryDto | undefined {
-    return this.countriesService.findOne(name);
+  findOne(@Param('name') name: string): CountryDto {
+    const country = this.countriesService.findOne(name);
+    if (!country) {
+      throw new NotFoundException('Pays non trouvé');
+    }
+    return country;
   }
 
   @ApiOperation({ summary: 'Mettre à jour un pays' })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: 'Pays mis à jour avec succès',
   })
+  @ApiResponse({
+    status: 400,
+    description:
+      "Le nom du corps de la requête ne correspond pas à celui de l'URL.",
+  })
   @Patch(':name')
+  @HttpCode(HttpStatus.NO_CONTENT)
   update(
     @Param('name') name: string,
     @Body() updateCountryDto: UpdateCountryDto,
   ): void {
+    if ('name' in updateCountryDto && updateCountryDto.name !== name) {
+      throw new BadRequestException(
+        "Le nom du corps de la requête ne correspond pas à celui de l'URL.",
+      );
+    }
+
     return this.countriesService.update(name, updateCountryDto);
   }
 
   @ApiOperation({ summary: 'Supprimer un pays' })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: 'Pays supprimé avec succès',
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Pays non trouvé',
+  })
   @Delete(':name')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('name') name: string): void {
+    const country = this.countriesService.findOne(name);
+    if (!country) {
+      throw new NotFoundException('Pays non trouvé');
+    }
     return this.countriesService.remove(name);
   }
 }

@@ -22,7 +22,7 @@ export class CharactersService {
 
   public update(id: string, updateCharacterDto: UpdateCharacterDto): void {
     this.characters = this.characters.map((character) => {
-      if (character.id === updateCharacterDto.id) {
+      if (character.id === id) {
         return { ...character, ...updateCharacterDto };
       }
       return character;
@@ -35,10 +35,7 @@ export class CharactersService {
     );
   }
 
-  public fight(characterId: string, versusId: string): Character | undefined {
-    const character1 = this.findOne(characterId);
-    const character2 = this.findOne(versusId);
-
-    return Math.random() * 100 < 50 ? character1 : character2;
+  public fight(character: Character, versus: Character): Character {
+    return Math.random() * 100 < 50 ? character : versus;
   }
 }

@@ -1,8 +1,12 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -13,6 +17,7 @@ import { CharactersService } from './characters.service';
 import { CharacterDto } from './dto/character.dto';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
+import { Character } from './entities/character.entity';
 
 @Controller('characters')
 export class CharactersController {
@@ -45,9 +50,17 @@ export class CharactersController {
     description: 'Détails du personnage',
     type: CharacterDto,
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Personnage non trouvé',
+  })
   @Get(':id')
-  findOne(@Param('id') id: string): CharacterDto | undefined {
-    return this.charactersService.findOne(id);
+  findOne(@Param('id') id: string): CharacterDto {
+    const character = this.charactersService.findOne(id);
+    if (!character) {
+      throw new NotFoundException('Personnage non trouvé');
+    }
+    return character;
   }
 
   @ApiOperation({ summary: '🥊 Lancer un combat entre deux personnages' })
@@ -56,24 +69,49 @@ export class CharactersController {
     description: 'Résultat du combat entre les personnages',
     type: CharacterDto,
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Un ou plusieurs personnages non trouvés',
+  })
   @Get(':id/fight')
   fight(
     @Param('id') characterId: string,
     @Query('versus') versusId: string,
   ): CharacterDto | undefined {
-    return this.charactersService.fight(characterId, versusId);
+    const character1: Character | undefined =
+      this.charactersService.findOne(characterId);
+    const character2: Character | undefined =
+      this.charactersService.findOne(versusId);
+
+    if (!character1 || !character2) {
+      throw new NotFoundException('Personnage non trouvé');
+    }
+
+    return this.charactersService.fight(character1, character2);
   }
 
   @ApiOperation({ summary: 'Mettre à jour un personnage' })
   @ApiResponse({
-    status: 200,
+    status: 204,
     description: 'Personnage mis à jour avec succès',
   })
+  @ApiResponse({
+    status: 400,
+    description:
+      "L'identifiant du corps de la requête ne correspond pas à celui de l'URL.",
+  })
   @Patch(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   update(
     @Param('id') id: string,
     @Body() updateCharacterDto: UpdateCharacterDto,
   ): void {
+    if ('id' in updateCharacterDto && updateCharacterDto.id !== id) {
+      throw new BadRequestException(
+        "L'identifiant du corps de la requête ne correspond pas à celui de l'URL.",
+      );
+    }
+
     return this.charactersService.update(id, updateCharacterDto);
   }
 
@@ -82,8 +120,17 @@ export class CharactersController {
     status: 204,
     description: 'Personnage supprimé avec succès',
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Personnage non trouvé',
+  })
   @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string): void {
+    const character = this.charactersService.findOne(id);
+    if (!character) {
+      throw new NotFoundException('Personnage non trouvé');
+    }
     return this.charactersService.remove(id);
   }
 }
