@@ -3,12 +3,22 @@ import { CharactersService } from '../characters/characters.service';
 import { Fight } from './entities/fight.entity';
 import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
 import { MultipleCharactersNotFoundException } from './exceptions/multiple-characters-not-found.exception';
+import { SameCharacterFightException } from './exceptions/same-character-fight.exception';
 
 @Injectable()
 export class FightsService {
   private fights: Fight[] = [];
 
   constructor(private readonly charactersService: CharactersService) {}
+
+  private verifyDifferentCharacters(
+    characterOneId: string,
+    characterTwoId: string,
+  ): void {
+    if (characterOneId === characterTwoId) {
+      throw new SameCharacterFightException(characterOneId);
+    }
+  }
 
   private verifyCharactersExist(
     characterOneId: string,
@@ -31,6 +41,7 @@ export class FightsService {
 
   create(characterOneId: string, characterTwoId: string): Fight {
     this.verifyCharactersExist(characterOneId, characterTwoId);
+    this.verifyDifferentCharacters(characterOneId, characterTwoId);
 
     const newFight: Fight = {
       characterOneId,

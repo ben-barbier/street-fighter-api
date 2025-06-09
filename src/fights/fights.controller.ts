@@ -8,20 +8,17 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
-import { CharactersService } from '../characters/characters.service';
 import { CreateFightDto } from './dto/create-fight.dto';
 import { FightDto } from './dto/fight.dto';
 import { Fight } from './entities/fight.entity';
 import { FightsService } from './fights.service';
 import { CharacterNotFoundExceptionFilter } from './filters/character-not-found-exception.filter';
 import { MultipleCharactersNotFoundExceptionFilter } from './filters/multiple-characters-not-found-exception.filter';
+import { SameCharacterFightExceptionFilter } from './filters/same-character-fight-exception.filter';
 
 @Controller('fights')
 export class FightsController {
-  constructor(
-    private readonly fightsService: FightsService,
-    private readonly charactersService: CharactersService,
-  ) {}
+  constructor(private readonly fightsService: FightsService) {}
 
   @ApiOperation({ summary: '🥊 Lancer un combat entre deux personnages' })
   @ApiResponse({
@@ -37,6 +34,7 @@ export class FightsController {
   @UseFilters(
     CharacterNotFoundExceptionFilter,
     MultipleCharactersNotFoundExceptionFilter,
+    SameCharacterFightExceptionFilter,
   )
   fight(@Body() createFightDto: CreateFightDto): Fight {
     return this.fightsService.create(
