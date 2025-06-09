@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
 
 export class CharacterDto {
   @ApiProperty({
@@ -14,7 +14,7 @@ export class CharacterDto {
     description: "Ordre d'affichage du personnage",
     example: 1,
   })
-  @IsNumber()
+  @IsInt()
   @Min(1)
   order: number;
 
@@ -30,7 +30,7 @@ export class CharacterDto {
     description: 'Points de stamina du personnage',
     example: 1000,
   })
-  @IsNumber()
+  @IsInt()
   @Min(1)
   stamina: number;
 
@@ -38,7 +38,7 @@ export class CharacterDto {
     description: 'Points de stun du personnage',
     example: 1000,
   })
-  @IsNumber()
+  @IsInt()
   @Min(1)
   stun: number;
 
