@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
 
 export class CharacterDto {
@@ -8,6 +9,9 @@ export class CharacterDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim() : (value as unknown),
+  )
   id: string;
 
   @ApiProperty({
@@ -24,6 +28,9 @@ export class CharacterDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim() : (value as unknown),
+  )
   name: string;
 
   @ApiProperty({
@@ -48,5 +55,8 @@ export class CharacterDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim() : (value as unknown),
+  )
   country: string;
 }

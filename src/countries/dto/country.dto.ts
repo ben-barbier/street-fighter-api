@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Transform } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CountryDto {
@@ -8,6 +9,9 @@ export class CountryDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim() : (value as unknown),
+  )
   name: string;
 
   @ApiProperty({
@@ -16,5 +20,8 @@ export class CountryDto {
   })
   @IsString()
   @IsNotEmpty()
+  @Transform(({ value }) =>
+    typeof value === 'string' ? value.trim() : (value as unknown),
+  )
   flagUrl: string;
 }
