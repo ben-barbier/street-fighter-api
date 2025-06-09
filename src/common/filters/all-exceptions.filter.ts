@@ -34,6 +34,28 @@ import { SameCharacterFightException } from '../../fights/exceptions/same-charac
   SameCharacterFightException
 )
 export class AllExceptionsFilter implements ExceptionFilter {
+  // Exceptions correspondant aux erreurs de validation/mauvaise requête (400 Bad Request)
+  private readonly badRequestExceptions = [
+    CountryNameMismatchException,
+    CharacterIdMismatchException,
+    SameCharacterFightException,
+  ];
+
+  // Exceptions correspondant aux ressources non trouvées (404 Not Found)
+  private readonly notFoundExceptions = [
+    CountryNotFoundException,
+    CharacterNotFoundException,
+    MultipleCharactersNotFoundException,
+  ];
+
+  // Exceptions correspondant aux conflits avec l'état actuel des ressources (409 Conflict)
+  private readonly conflictExceptions = [
+    DuplicateCountryNameException,
+    DuplicateCharacterIdException,
+    CharacterHasFightsException,
+    CountryHasCharactersException,
+  ];
+
   catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -44,29 +66,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
 
     // Détermination du code de statut HTTP approprié selon le type d'exception
-    if (
-      exception instanceof CountryNameMismatchException ||
-      exception instanceof CharacterIdMismatchException ||
-      exception instanceof SameCharacterFightException
-    ) {
-      // Erreurs de validation/mauvaise requête
+    if (this.badRequestExceptions.some(exceptionType => exception instanceof exceptionType)) {
       error = 'Bad Request';
       statusCode = HttpStatus.BAD_REQUEST;
-    } else if (
-      exception instanceof CountryNotFoundException ||
-      exception instanceof CharacterNotFoundException ||
-      exception instanceof MultipleCharactersNotFoundException
-    ) {
-      // Ressources non trouvées
+    } else if (this.notFoundExceptions.some(exceptionType => exception instanceof exceptionType)) {
       error = 'Not Found';
       statusCode = HttpStatus.NOT_FOUND;
-    } else if (
-      exception instanceof DuplicateCountryNameException ||
-      exception instanceof DuplicateCharacterIdException ||
-      exception instanceof CharacterHasFightsException ||
-      exception instanceof CountryHasCharactersException
-    ) {
-      // Conflits avec l'état actuel des ressources
+    } else if (this.conflictExceptions.some(exceptionType => exception instanceof exceptionType)) {
       error = 'Conflict';
       statusCode = HttpStatus.CONFLICT;
     }
