@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { characters } from './characters.data';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { Character } from './entities/character.entity';
-import { characters } from './characters.data';
 
 @Injectable()
 export class CharactersService {

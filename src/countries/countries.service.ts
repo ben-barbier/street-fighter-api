@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
+import { countries } from './countries.data';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { Country } from './entities/country.entity';
-import { countries } from './countries.data';
 
 @Injectable()
 export class CountriesService {

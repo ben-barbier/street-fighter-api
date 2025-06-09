@@ -1,8 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { CharactersModule } from './characters/characters.module';
 import { CountriesModule } from './countries/countries.module';
-import { join } from 'path';
-import { ServeStaticModule } from '@nestjs/serve-static';
 import { DelayMiddleware } from './middlewares/delay.middleware';
 
 @Module({
