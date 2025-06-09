@@ -15,7 +15,7 @@ export class CharactersService {
 
   constructor(
     @Inject(forwardRef(() => FightsService))
-    private readonly fightsService: FightsService,
+    private readonly fightsService: FightsService
   ) {}
 
   private generateId(name: string): string {
@@ -26,9 +26,7 @@ export class CharactersService {
   }
 
   private validateId(id: string, excludeId?: string): void {
-    if (
-      this.characters.some((char) => char.id === id && char.id !== excludeId)
-    ) {
+    if (this.characters.some(char => char.id === id && char.id !== excludeId)) {
       throw new DuplicateCharacterIdException(id);
     }
   }
@@ -43,7 +41,7 @@ export class CharactersService {
     const newCharacter: Character = { id, ...createCharacterDto };
 
     // Décaler les personnages ayant un ordre supérieur ou égal à celui du nouveau personnage
-    this.characters = this.characters.map((character) => {
+    this.characters = this.characters.map(character => {
       if (character.order >= createCharacterDto.order) {
         return { ...character, order: character.order + 1 };
       }
@@ -61,13 +59,10 @@ export class CharactersService {
   }
 
   public findOne(id: string): Character | undefined {
-    return this.characters.find((character) => character.id === id);
+    return this.characters.find(character => character.id === id);
   }
 
-  public update(
-    id: string,
-    updateCharacterDto: UpdateCharacterDto,
-  ): CharacterDto {
+  public update(id: string, updateCharacterDto: UpdateCharacterDto): CharacterDto {
     const character = this.findOne(id);
     if (!character) {
       throw new CharacterNotFoundException(id);
@@ -81,7 +76,7 @@ export class CharactersService {
 
     const updatedCharacter = { ...character, ...updateCharacterDto };
 
-    this.characters = this.characters.map((character) => {
+    this.characters = this.characters.map(character => {
       return character.id === id ? updatedCharacter : character;
     });
 
@@ -99,8 +94,6 @@ export class CharactersService {
       throw new CharacterHasFightsException(id);
     }
 
-    this.characters = this.characters.filter(
-      (character) => character.id !== id,
-    );
+    this.characters = this.characters.filter(character => character.id !== id);
   }
 }

@@ -21,8 +21,6 @@ import { DelayMiddleware } from './middlewares/delay.middleware';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(DelayMiddleware)
-      .forRoutes('characters', 'countries', 'fights');
+    consumer.apply(DelayMiddleware).forRoutes('characters', 'countries', 'fights');
   }
 }

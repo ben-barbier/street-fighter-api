@@ -26,10 +26,7 @@ export class FightsController {
   })
   @Post()
   fight(@Body() createFightDto: CreateFightDto): Fight {
-    return this.fightsService.create(
-      createFightDto.characterOneId,
-      createFightDto.characterTwoId,
-    );
+    return this.fightsService.create(createFightDto.characterOneId, createFightDto.characterTwoId);
   }
 
   @ApiOperation({ summary: 'Récupérer tous les combats' })

@@ -11,30 +11,21 @@ export class FightsService {
 
   constructor(
     @Inject(forwardRef(() => CharactersService))
-    private readonly charactersService: CharactersService,
+    private readonly charactersService: CharactersService
   ) {}
 
-  private verifyDifferentCharacters(
-    characterOneId: string,
-    characterTwoId: string,
-  ): void {
+  private verifyDifferentCharacters(characterOneId: string, characterTwoId: string): void {
     if (characterOneId === characterTwoId) {
       throw new SameCharacterFightException(characterOneId);
     }
   }
 
-  private verifyCharactersExist(
-    characterOneId: string,
-    characterTwoId: string,
-  ): void {
+  private verifyCharactersExist(characterOneId: string, characterTwoId: string): void {
     const characterOne = this.charactersService.findOne(characterOneId);
     const characterTwo = this.charactersService.findOne(characterTwoId);
 
     if (!characterOne && !characterTwo) {
-      throw new MultipleCharactersNotFoundException([
-        characterOneId,
-        characterTwoId,
-      ]);
+      throw new MultipleCharactersNotFoundException([characterOneId, characterTwoId]);
     } else if (!characterOne) {
       throw new CharacterNotFoundException(characterOneId);
     } else if (!characterTwo) {
@@ -67,25 +58,14 @@ export class FightsService {
       throw new CharacterNotFoundException(characterId);
     }
 
-    return this.fights.filter(
-      (fight) =>
-        fight.characterOneId === characterId ||
-        fight.characterTwoId === characterId,
-    );
+    return this.fights.filter(fight => fight.characterOneId === characterId || fight.characterTwoId === characterId);
   }
 
-  private determineWinner(
-    characterOneId: string,
-    characterTwoId: string,
-  ): string {
+  private determineWinner(characterOneId: string, characterTwoId: string): string {
     return Math.random() * 100 < 50 ? characterOneId : characterTwoId;
   }
 
   public isCharacterUsedInFights(characterId: string): boolean {
-    return this.fights.some(
-      (fight) =>
-        fight.characterOneId === characterId ||
-        fight.characterTwoId === characterId,
-    );
+    return this.fights.some(fight => fight.characterOneId === characterId || fight.characterTwoId === characterId);
   }
 }

@@ -15,12 +15,12 @@ export class CountriesService {
 
   constructor(
     @Inject(forwardRef(() => CharactersService))
-    private readonly charactersService: CharactersService,
+    private readonly charactersService: CharactersService
   ) {}
 
   public create(newCountry: CreateCountryDto): CountryDto {
     // Vérification de l'existence d'un pays avec le même nom
-    if (this.countries.some((country) => country.name === newCountry.name)) {
+    if (this.countries.some(country => country.name === newCountry.name)) {
       throw new DuplicateCountryNameException(newCountry.name);
     }
 
@@ -35,19 +35,16 @@ export class CountriesService {
   }
 
   public findOne(name: string): Country | undefined {
-    return this.countries.find((country) => country.name === name);
+    return this.countries.find(country => country.name === name);
   }
 
-  public update(
-    name: string,
-    updateCountryDto: UpdateCountryDto,
-  ): UpdateCountryDto {
+  public update(name: string, updateCountryDto: UpdateCountryDto): UpdateCountryDto {
     const country = this.findOne(name);
     if (!country) {
       throw new CountryNotFoundException(name);
     }
 
-    this.countries = this.countries.map((country) => {
+    this.countries = this.countries.map(country => {
       if (country.name === name) {
         return { ...country, ...updateCountryDto };
       }
@@ -65,15 +62,13 @@ export class CountriesService {
     }
 
     // Vérifier si des personnages sont associés à ce pays
-    const hasCountryCharacters = this.charactersService
-      .findAll()
-      .some((character) => character.country === name);
+    const hasCountryCharacters = this.charactersService.findAll().some(character => character.country === name);
 
     if (hasCountryCharacters) {
       throw new CountryHasCharactersException(name);
     }
 
     // Si aucun personnage n'utilise ce pays, on peut le supprimer
-    this.countries = this.countries.filter((country) => country.name !== name);
+    this.countries = this.countries.filter(country => country.name !== name);
   }
 }

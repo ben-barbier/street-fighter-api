@@ -1,9 +1,4 @@
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpStatus,
-} from '@nestjs/common';
+import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
 import { CharacterHasFightsException } from '../../characters/exceptions/character-has-fights.exception';
 import { CharacterIdMismatchException } from '../../characters/exceptions/character-id-mismatch.exception';
@@ -36,7 +31,7 @@ import { SameCharacterFightException } from '../../fights/exceptions/same-charac
 
   // Exceptions liées aux combats
   MultipleCharactersNotFoundException,
-  SameCharacterFightException,
+  SameCharacterFightException
 )
 export class AllExceptionsFilter implements ExceptionFilter {
   catch(exception: Error, host: ArgumentsHost) {

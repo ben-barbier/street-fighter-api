@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CountriesService } from './countries.service';
 import { CountryDto } from './dto/country.dto';
@@ -79,18 +69,14 @@ export class CountriesController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      "Le nom dans le corps de la requête ne correspond pas à celui de l'URL",
+    description: "Le nom dans le corps de la requête ne correspond pas à celui de l'URL",
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: "Le pays demandé n'a pas été trouvé",
   })
   @Patch(':name')
-  update(
-    @Param('name') name: string,
-    @Body() updateCountryDto: UpdateCountryDto,
-  ): UpdateCountryDto {
+  update(@Param('name') name: string, @Body() updateCountryDto: UpdateCountryDto): UpdateCountryDto {
     if ('name' in updateCountryDto && updateCountryDto.name !== name) {
       throw new CountryNameMismatchException();
     }
@@ -109,8 +95,7 @@ export class CountriesController {
   })
   @ApiResponse({
     status: HttpStatus.CONFLICT,
-    description:
-      'Le pays est associé à des personnages et ne peut pas être supprimé',
+    description: 'Le pays est associé à des personnages et ne peut pas être supprimé',
   })
   @Delete(':name')
   @HttpCode(HttpStatus.NO_CONTENT)

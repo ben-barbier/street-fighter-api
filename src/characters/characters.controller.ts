@@ -1,14 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CharactersService } from './characters.service';
 import { CharacterDto } from './dto/character.dto';
@@ -79,18 +69,14 @@ export class CharactersController {
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description:
-      "L'identifiant dans le corps de la requête ne correspond pas à celui de l'URL",
+    description: "L'identifiant dans le corps de la requête ne correspond pas à celui de l'URL",
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: "Le personnage demandé n'a pas été trouvé",
   })
   @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateCharacterDto: UpdateCharacterDto,
-  ): CharacterDto {
+  update(@Param('id') id: string, @Body() updateCharacterDto: UpdateCharacterDto): CharacterDto {
     if ('id' in updateCharacterDto && updateCharacterDto.id !== id) {
       throw new CharacterIdMismatchException(id, updateCharacterDto.id!);
     }
@@ -109,8 +95,7 @@ export class CharactersController {
   })
   @ApiResponse({
     status: HttpStatus.CONFLICT,
-    description:
-      'Le personnage est impliqué dans des combats et ne peut pas être supprimé',
+    description: 'Le personnage est impliqué dans des combats et ne peut pas être supprimé',
   })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
