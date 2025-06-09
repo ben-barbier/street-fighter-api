@@ -115,10 +115,6 @@ export class CountriesController {
   @Delete(':name')
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('name') name: string): void {
-    const country = this.countriesService.findOne(name);
-    if (!country) {
-      throw new CountryNotFoundException(name);
-    }
     return this.countriesService.remove(name);
   }
 }

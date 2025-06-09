@@ -9,6 +9,7 @@ import { CharacterHasFightsException } from '../../characters/exceptions/charact
 import { CharacterIdMismatchException } from '../../characters/exceptions/character-id-mismatch.exception';
 import { CharacterNotFoundException } from '../../characters/exceptions/character-not-found.exception';
 import { DuplicateCharacterIdException } from '../../characters/exceptions/duplicate-character-id.exception';
+import { CountryHasCharactersException } from '../../countries/exceptions/country-has-characters.exception';
 import { CountryNameMismatchException } from '../../countries/exceptions/country-name-mismatch.exception';
 import { CountryNotFoundException } from '../../countries/exceptions/country-not-found.exception';
 import { DuplicateCountryNameException } from '../../countries/exceptions/duplicate-country-name.exception';
@@ -31,6 +32,7 @@ import { SameCharacterFightException } from '../../fights/exceptions/same-charac
   CountryNameMismatchException,
   CountryNotFoundException,
   DuplicateCountryNameException,
+  CountryHasCharactersException,
 
   // Exceptions liées aux combats
   MultipleCharactersNotFoundException,
@@ -66,7 +68,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     } else if (
       exception instanceof DuplicateCountryNameException ||
       exception instanceof DuplicateCharacterIdException ||
-      exception instanceof CharacterHasFightsException
+      exception instanceof CharacterHasFightsException ||
+      exception instanceof CountryHasCharactersException
     ) {
       // Conflits avec l'état actuel des ressources
       error = 'Conflict';
