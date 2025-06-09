@@ -20,9 +20,9 @@ export class CountriesService {
     return this.countries.find((country) => country.name === name);
   }
 
-  public update(id: number, updateCountryDto: UpdateCountryDto): void {
+  public update(name: string, updateCountryDto: UpdateCountryDto): void {
     this.countries = this.countries.map((country) => {
-      if (country.name === updateCountryDto.name) {
+      if (country.name === name) {
         return { ...country, ...updateCountryDto };
       }
       return country;

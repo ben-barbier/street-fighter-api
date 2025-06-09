@@ -31,12 +31,12 @@ export class CountriesController {
     return this.countriesService.findOne(name);
   }
 
-  @Patch(':id')
+  @Patch(':name')
   update(
-    @Param('id') id: string,
+    @Param('name') name: string,
     @Body() updateCountryDto: UpdateCountryDto,
   ): void {
-    return this.countriesService.update(+id, updateCountryDto);
+    return this.countriesService.update(name, updateCountryDto);
   }
 
   @Delete(':name')
