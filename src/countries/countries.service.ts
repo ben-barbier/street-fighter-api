@@ -3,13 +3,14 @@ import { countries } from './countries.data';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { Country } from './entities/country.entity';
+import { CountryNotFoundException } from './exceptions/country-not-found.exception';
 import { DuplicateCountryNameException } from './exceptions/duplicate-country-name.exception';
 
 @Injectable()
 export class CountriesService {
   private countries: Country[] = countries();
 
-  public create(createCountryDto: CreateCountryDto): void {
+  public create(createCountryDto: CreateCountryDto): CreateCountryDto {
     // Vérification de l'existence d'un pays avec le même nom
     if (
       this.countries.some((country) => country.name === createCountryDto.name)
@@ -19,6 +20,8 @@ export class CountriesService {
 
     // Ajout du pays
     this.countries = this.countries.concat(createCountryDto);
+
+    return createCountryDto;
   }
 
   public findAll(): Country[] {
@@ -29,13 +32,23 @@ export class CountriesService {
     return this.countries.find((country) => country.name === name);
   }
 
-  public update(name: string, updateCountryDto: UpdateCountryDto): void {
+  public update(
+    name: string,
+    updateCountryDto: UpdateCountryDto,
+  ): UpdateCountryDto {
+    const country = this.findOne(name);
+    if (!country) {
+      throw new CountryNotFoundException(name);
+    }
+
     this.countries = this.countries.map((country) => {
       if (country.name === name) {
         return { ...country, ...updateCountryDto };
       }
       return country;
     });
+
+    return updateCountryDto;
   }
 
   public remove(name: string): void {

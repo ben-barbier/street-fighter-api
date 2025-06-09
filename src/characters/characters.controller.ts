@@ -1,12 +1,10 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
   Get,
   HttpCode,
   HttpStatus,
-  NotFoundException,
   Param,
   Patch,
   Post,
@@ -17,6 +15,10 @@ import { CharactersService } from './characters.service';
 import { CharacterDto } from './dto/character.dto';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
+import { CharacterIdMismatchException } from './exceptions/character-id-mismatch.exception';
+import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
+import { CharacterIdMismatchExceptionFilter } from './filters/character-id-mismatch-exception.filter';
+import { CharacterNotFoundExceptionFilter } from './filters/character-not-found-exception.filter';
 import { DuplicateCharacterIdExceptionFilter } from './filters/duplicate-character-id-exception.filter';
 
 @Controller('characters')
@@ -25,11 +27,11 @@ export class CharactersController {
 
   @ApiOperation({ summary: 'Créer un nouveau personnage' })
   @ApiResponse({
-    status: 201,
+    status: HttpStatus.CREATED,
     description: 'Personnage créé avec succès',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description: 'Validation échouée (données manquantes ou invalides)',
   })
   @Post()
@@ -40,7 +42,7 @@ export class CharactersController {
 
   @ApiOperation({ summary: 'Récupérer tous les personnages' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Liste des personnages',
     type: [CharacterDto],
   })
@@ -51,52 +53,49 @@ export class CharactersController {
 
   @ApiOperation({ summary: 'Récupérer un personnage par son identifiant' })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     description: 'Détails du personnage',
     type: CharacterDto,
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Personnage non trouvé',
   })
   @Get(':id')
+  @UseFilters(CharacterNotFoundExceptionFilter)
   findOne(@Param('id') id: string): CharacterDto {
     const character = this.charactersService.findOne(id);
     if (!character) {
-      throw new NotFoundException('Personnage non trouvé');
+      throw new CharacterNotFoundException(id);
     }
     return character;
   }
 
   @ApiOperation({ summary: 'Mettre à jour un personnage' })
   @ApiResponse({
-    status: 204,
+    status: HttpStatus.OK,
     description: 'Personnage mis à jour avec succès',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     description:
       "L'identifiant du corps de la requête ne correspond pas à celui de l'URL.",
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Personnage non trouvé',
   })
   @Patch(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseFilters(
+    CharacterNotFoundExceptionFilter,
+    CharacterIdMismatchExceptionFilter,
+  )
   update(
     @Param('id') id: string,
     @Body() updateCharacterDto: UpdateCharacterDto,
-  ): void {
+  ): CharacterDto {
     if ('id' in updateCharacterDto && updateCharacterDto.id !== id) {
-      throw new BadRequestException(
-        "L'identifiant du corps de la requête ne correspond pas à celui de l'URL.",
-      );
-    }
-
-    const character = this.charactersService.findOne(id);
-    if (!character) {
-      throw new NotFoundException('Personnage non trouvé');
+      throw new CharacterIdMismatchException(id, updateCharacterDto.id!);
     }
 
     return this.charactersService.update(id, updateCharacterDto);
@@ -104,20 +103,17 @@ export class CharactersController {
 
   @ApiOperation({ summary: 'Supprimer un personnage' })
   @ApiResponse({
-    status: 204,
+    status: HttpStatus.NO_CONTENT,
     description: 'Personnage supprimé avec succès',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     description: 'Personnage non trouvé',
   })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
+  @UseFilters(CharacterNotFoundExceptionFilter)
   remove(@Param('id') id: string): void {
-    const character = this.charactersService.findOne(id);
-    if (!character) {
-      throw new NotFoundException('Personnage non trouvé');
-    }
     return this.charactersService.remove(id);
   }
 }

@@ -1,19 +1,45 @@
 import { Injectable } from '@nestjs/common';
+import { CharactersService } from '../characters/characters.service';
 import { Fight } from './entities/fight.entity';
+import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
+import { MultipleCharactersNotFoundException } from './exceptions/multiple-characters-not-found.exception';
 
 @Injectable()
 export class FightsService {
   private fights: Fight[] = [];
 
+  constructor(private readonly charactersService: CharactersService) {}
+
+  private verifyCharactersExist(
+    characterOneId: string,
+    characterTwoId: string,
+  ): void {
+    const characterOne = this.charactersService.findOne(characterOneId);
+    const characterTwo = this.charactersService.findOne(characterTwoId);
+
+    if (!characterOne && !characterTwo) {
+      throw new MultipleCharactersNotFoundException([
+        characterOneId,
+        characterTwoId,
+      ]);
+    } else if (!characterOne) {
+      throw new CharacterNotFoundException(characterOneId);
+    } else if (!characterTwo) {
+      throw new CharacterNotFoundException(characterTwoId);
+    }
+  }
+
   create(characterOneId: string, characterTwoId: string): Fight {
-    const newFight = {
+    this.verifyCharactersExist(characterOneId, characterTwoId);
+
+    const newFight: Fight = {
       characterOneId,
       characterTwoId,
       winnerId: this.determineWinner(characterOneId, characterTwoId),
       date: new Date(),
     };
 
-    this.fights.push(newFight);
+    this.fights = this.fights.concat(newFight);
     return newFight;
   }
 
@@ -22,6 +48,11 @@ export class FightsService {
   }
 
   findByCharacterId(characterId: string): Fight[] {
+    const character = this.charactersService.findOne(characterId);
+    if (!character) {
+      throw new CharacterNotFoundException(characterId);
+    }
+
     return this.fights.filter(
       (fight) =>
         fight.characterOneId === characterId ||

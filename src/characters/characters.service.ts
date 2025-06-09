@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { characters } from './characters.data';
+import { CharacterDto } from './dto/character.dto';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { Character } from './entities/character.entity';
+import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
 import { DuplicateCharacterIdException } from './exceptions/duplicate-character-id.exception';
 
 @Injectable()
@@ -36,16 +38,30 @@ export class CharactersService {
     return this.characters.find((character) => character.id === id);
   }
 
-  public update(id: string, updateCharacterDto: UpdateCharacterDto): void {
+  public update(
+    id: string,
+    updateCharacterDto: UpdateCharacterDto,
+  ): CharacterDto {
+    const character = this.findOne(id);
+    if (!character) {
+      throw new CharacterNotFoundException(id);
+    }
+
+    const updatedCharacter = { ...character, ...updateCharacterDto };
+
     this.characters = this.characters.map((character) => {
-      if (character.id === id) {
-        return { ...character, ...updateCharacterDto };
-      }
-      return character;
+      return character.id === id ? updatedCharacter : character;
     });
+
+    return updatedCharacter;
   }
 
   public remove(id: string): void {
+    const character = this.findOne(id);
+    if (!character) {
+      throw new CharacterNotFoundException(id);
+    }
+
     this.characters = this.characters.filter(
       (character) => character.id !== id,
     );
