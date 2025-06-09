@@ -3,12 +3,21 @@ import { countries } from './countries.data';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { Country } from './entities/country.entity';
+import { DuplicateCountryNameException } from './exceptions/duplicate-country-name.exception';
 
 @Injectable()
 export class CountriesService {
   private countries: Country[] = countries();
 
   public create(createCountryDto: CreateCountryDto): void {
+    // Vérification de l'existence d'un pays avec le même nom
+    if (
+      this.countries.some((country) => country.name === createCountryDto.name)
+    ) {
+      throw new DuplicateCountryNameException(createCountryDto.name);
+    }
+
+    // Ajout du pays
     this.countries = this.countries.concat(createCountryDto);
   }
 

@@ -3,6 +3,7 @@ import { characters } from './characters.data';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { Character } from './entities/character.entity';
+import { DuplicateCharacterIdException } from './exceptions/duplicate-character-id.exception';
 
 @Injectable()
 export class CharactersService {
@@ -14,6 +15,11 @@ export class CharactersService {
       .toLowerCase()
       .replace(/\s+/g, '-')
       .replace(/[^\w-]/g, '');
+
+    // Vérification de l'existence de l'ID
+    if (this.characters.some((character) => character.id === id)) {
+      throw new DuplicateCharacterIdException(id);
+    }
 
     // Ajout du personnage avec l'ID généré
     this.characters = this.characters.concat({

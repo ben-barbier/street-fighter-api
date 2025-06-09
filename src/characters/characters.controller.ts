@@ -11,6 +11,7 @@ import {
   Patch,
   Post,
   Query,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CharactersService } from './characters.service';
@@ -18,6 +19,7 @@ import { CharacterDto } from './dto/character.dto';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { Character } from './entities/character.entity';
+import { DuplicateCharacterIdExceptionFilter } from './filters/duplicate-character-id-exception.filter';
 
 @Controller('characters')
 export class CharactersController {
@@ -33,6 +35,7 @@ export class CharactersController {
     description: 'Validation échouée (données manquantes ou invalides)',
   })
   @Post()
+  @UseFilters(DuplicateCharacterIdExceptionFilter)
   create(@Body() createCharacterDto: CreateCharacterDto): void {
     return this.charactersService.create(createCharacterDto);
   }

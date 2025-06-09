@@ -10,12 +10,14 @@ import {
   Param,
   Patch,
   Post,
+  UseFilters,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CountriesService } from './countries.service';
 import { CountryDto } from './dto/country.dto';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
+import { DuplicateCountryNameExceptionFilter } from './filters/duplicate-country-name-exception.filter';
 
 @Controller('countries')
 export class CountriesController {
@@ -31,6 +33,7 @@ export class CountriesController {
     description: 'Validation échouée (données manquantes ou invalides)',
   })
   @Post()
+  @UseFilters(DuplicateCountryNameExceptionFilter)
   create(@Body() createCountryDto: CreateCountryDto): void {
     return this.countriesService.create(createCountryDto);
   }
