@@ -31,7 +31,7 @@ export class CharactersService {
   }
 
   public findAll(): Character[] {
-    return this.characters;
+    return this.characters.toSorted((c1, c2) => c1.order - c2.order);
   }
 
   public findOne(id: string): Character | undefined {
