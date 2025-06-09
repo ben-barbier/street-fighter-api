@@ -5,7 +5,7 @@ import { Request, Response } from 'express';
 export class DelayMiddleware implements NestMiddleware {
   private static readonly MAX_DELAY_MS = 300;
 
-  use(req: Request, res: Response, next: (error?: Error | any) => void) {
+  use(req: Request, res: Response, next: (error?: Error) => void) {
     const delay = Math.floor(
       Math.random() * Math.floor(DelayMiddleware.MAX_DELAY_MS),
     );
