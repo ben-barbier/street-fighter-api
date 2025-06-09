@@ -5,6 +5,8 @@ Une API REST pour explorer les personnages et pays de Street Fighter, basée sur
 ## Installation
 
 ```bash
+git clone git@github.com:ben-barbier/street-fighter-api.git
+cd street-fighter-api
 npm install
 ```
 
