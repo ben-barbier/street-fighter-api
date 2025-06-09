@@ -9,7 +9,17 @@ export class CharactersService {
   private characters: Character[] = characters();
 
   public create(createCharacterDto: CreateCharacterDto): void {
-    this.characters = this.characters.concat(createCharacterDto);
+    // Génération de l'ID en kebab-case à partir du nom du personnage
+    const id = createCharacterDto.name
+      .toLowerCase()
+      .replace(/\s+/g, '-')
+      .replace(/[^\w-]/g, '');
+
+    // Ajout du personnage avec l'ID généré
+    this.characters = this.characters.concat({
+      id,
+      ...createCharacterDto,
+    });
   }
 
   public findAll(): Character[] {
