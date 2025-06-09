@@ -1,4 +1,3 @@
-export class CreateCountryDto {
-  name: string;
-  flagUrl: string;
-}
+import { CountryDto } from './country.dto';
+
+export class CreateCountryDto extends CountryDto {}
