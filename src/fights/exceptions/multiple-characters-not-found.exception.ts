@@ -3,6 +3,5 @@ export class MultipleCharactersNotFoundException extends Error {
     super(
       `Les personnages avec les IDs suivants n'ont pas été trouvés : ${ids.join(', ')}`,
     );
-    this.name = 'MultipleCharactersNotFoundException';
   }
 }

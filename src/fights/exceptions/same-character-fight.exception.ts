@@ -3,6 +3,5 @@ export class SameCharacterFightException extends Error {
     super(
       `Le combat ne peut pas être créé entre le même personnage (ID: ${characterId})`,
     );
-    this.name = 'SameCharacterFightException';
   }
 }

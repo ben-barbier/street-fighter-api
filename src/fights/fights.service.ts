@@ -1,7 +1,7 @@
 import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CharactersService } from '../characters/characters.service';
+import { CharacterNotFoundException } from '../characters/exceptions/character-not-found.exception';
 import { Fight } from './entities/fight.entity';
-import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
 import { MultipleCharactersNotFoundException } from './exceptions/multiple-characters-not-found.exception';
 import { SameCharacterFightException } from './exceptions/same-character-fight.exception';
 

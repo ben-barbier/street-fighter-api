@@ -1,20 +1,9 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpStatus,
-  Param,
-  Post,
-  UseFilters,
-} from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateFightDto } from './dto/create-fight.dto';
 import { FightDto } from './dto/fight.dto';
 import { Fight } from './entities/fight.entity';
 import { FightsService } from './fights.service';
-import { CharacterNotFoundExceptionFilter } from './filters/character-not-found-exception.filter';
-import { MultipleCharactersNotFoundExceptionFilter } from './filters/multiple-characters-not-found-exception.filter';
-import { SameCharacterFightExceptionFilter } from './filters/same-character-fight-exception.filter';
 
 @Controller('fights')
 export class FightsController {
@@ -31,11 +20,6 @@ export class FightsController {
     description: "Un ou les deux personnages n'ont pas été trouvés",
   })
   @Post()
-  @UseFilters(
-    CharacterNotFoundExceptionFilter,
-    MultipleCharactersNotFoundExceptionFilter,
-    SameCharacterFightExceptionFilter,
-  )
   fight(@Body() createFightDto: CreateFightDto): Fight {
     return this.fightsService.create(
       createFightDto.characterOneId,
@@ -65,7 +49,6 @@ export class FightsController {
     description: "Le personnage n'a pas été trouvé",
   })
   @Get('characters/:characterId')
-  @UseFilters(CharacterNotFoundExceptionFilter)
   findByCharacter(@Param('characterId') characterId: string): Fight[] {
     return this.fightsService.findByCharacterId(characterId);
   }

@@ -9,7 +9,6 @@ import {
   Param,
   Patch,
   Post,
-  UseFilters,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CountriesService } from './countries.service';
@@ -17,12 +16,8 @@ import { CountryDto } from './dto/country.dto';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { CountryNameMismatchException } from './exceptions/country-name-mismatch.exception';
-import { CountryNameMismatchExceptionFilter } from './filters/country-name-mismatch-exception.filter';
-import { CountryNotFoundExceptionFilter } from './filters/country-not-found-exception.filter';
-import { DuplicateCountryNameExceptionFilter } from './filters/duplicate-country-name-exception.filter';
 
 @Controller('countries')
-@UseFilters(CountryNotFoundExceptionFilter)
 export class CountriesController {
   constructor(private readonly countriesService: CountriesService) {}
 
@@ -36,7 +31,6 @@ export class CountriesController {
     description: 'Validation échouée (données manquantes ou invalides)',
   })
   @Post()
-  @UseFilters(DuplicateCountryNameExceptionFilter)
   create(@Body() createCountryDto: CreateCountryDto): CreateCountryDto {
     return this.countriesService.create(createCountryDto);
   }
@@ -86,10 +80,6 @@ export class CountriesController {
     description: 'Pays non trouvé',
   })
   @Patch(':name')
-  @UseFilters(
-    CountryNotFoundExceptionFilter,
-    CountryNameMismatchExceptionFilter,
-  )
   update(
     @Param('name') name: string,
     @Body() updateCountryDto: UpdateCountryDto,

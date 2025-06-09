@@ -8,7 +8,6 @@ import {
   Param,
   Patch,
   Post,
-  UseFilters,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CharactersService } from './characters.service';
@@ -17,10 +16,6 @@ import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { CharacterIdMismatchException } from './exceptions/character-id-mismatch.exception';
 import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
-import { CharacterHasFightsExceptionFilter } from './filters/character-has-fights-exception.filter';
-import { CharacterIdMismatchExceptionFilter } from './filters/character-id-mismatch-exception.filter';
-import { CharacterNotFoundExceptionFilter } from './filters/character-not-found-exception.filter';
-import { DuplicateCharacterIdExceptionFilter } from './filters/duplicate-character-id-exception.filter';
 
 @Controller('characters')
 export class CharactersController {
@@ -36,7 +31,6 @@ export class CharactersController {
     description: 'Validation échouée (données manquantes ou invalides)',
   })
   @Post()
-  @UseFilters(DuplicateCharacterIdExceptionFilter)
   create(@Body() createCharacterDto: CreateCharacterDto): CharacterDto {
     return this.charactersService.create(createCharacterDto);
   }
@@ -63,7 +57,6 @@ export class CharactersController {
     description: 'Personnage non trouvé',
   })
   @Get(':id')
-  @UseFilters(CharacterNotFoundExceptionFilter)
   findOne(@Param('id') id: string): CharacterDto {
     const character = this.charactersService.findOne(id);
     if (!character) {
@@ -87,11 +80,6 @@ export class CharactersController {
     description: 'Personnage non trouvé',
   })
   @Patch(':id')
-  @UseFilters(
-    CharacterNotFoundExceptionFilter,
-    CharacterIdMismatchExceptionFilter,
-    DuplicateCharacterIdExceptionFilter,
-  )
   update(
     @Param('id') id: string,
     @Body() updateCharacterDto: UpdateCharacterDto,
@@ -119,10 +107,6 @@ export class CharactersController {
   })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseFilters(
-    CharacterNotFoundExceptionFilter,
-    CharacterHasFightsExceptionFilter,
-  )
   remove(@Param('id') id: string): void {
     return this.charactersService.remove(id);
   }
