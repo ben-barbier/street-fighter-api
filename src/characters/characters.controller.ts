@@ -10,7 +10,6 @@ import {
   Param,
   Patch,
   Post,
-  Query,
   UseFilters,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
@@ -18,7 +17,6 @@ import { CharactersService } from './characters.service';
 import { CharacterDto } from './dto/character.dto';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
-import { Character } from './entities/character.entity';
 import { DuplicateCharacterIdExceptionFilter } from './filters/duplicate-character-id-exception.filter';
 
 @Controller('characters')
@@ -68,33 +66,6 @@ export class CharactersController {
       throw new NotFoundException('Personnage non trouvé');
     }
     return character;
-  }
-
-  @ApiOperation({ summary: '🥊 Lancer un combat entre deux personnages' })
-  @ApiResponse({
-    status: 200,
-    description: 'Résultat du combat entre les personnages',
-    type: CharacterDto,
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Un ou plusieurs personnages non trouvés',
-  })
-  @Get(':id/fight')
-  fight(
-    @Param('id') characterId: string,
-    @Query('versus') versusId: string,
-  ): CharacterDto | undefined {
-    const character1: Character | undefined =
-      this.charactersService.findOne(characterId);
-    const character2: Character | undefined =
-      this.charactersService.findOne(versusId);
-
-    if (!character1 || !character2) {
-      throw new NotFoundException('Personnage non trouvé');
-    }
-
-    return this.charactersService.fight(character1, character2);
   }
 
   @ApiOperation({ summary: 'Mettre à jour un personnage' })

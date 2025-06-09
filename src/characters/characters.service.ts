@@ -50,8 +50,4 @@ export class CharactersService {
       (character) => character.id !== id,
     );
   }
-
-  public fight(character: Character, versus: Character): Character {
-    return Math.random() * 100 < 50 ? character : versus;
-  }
 }
