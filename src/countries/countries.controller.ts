@@ -1,5 +1,4 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -17,6 +16,8 @@ import { CountriesService } from './countries.service';
 import { CountryDto } from './dto/country.dto';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
+import { CountryNameMismatchException } from './exceptions/country-name-mismatch.exception';
+import { CountryNameMismatchExceptionFilter } from './filters/country-name-mismatch-exception.filter';
 import { CountryNotFoundExceptionFilter } from './filters/country-not-found-exception.filter';
 import { DuplicateCountryNameExceptionFilter } from './filters/duplicate-country-name-exception.filter';
 
@@ -85,15 +86,16 @@ export class CountriesController {
     description: 'Pays non trouvé',
   })
   @Patch(':name')
-  @UseFilters(CountryNotFoundExceptionFilter)
+  @UseFilters(
+    CountryNotFoundExceptionFilter,
+    CountryNameMismatchExceptionFilter,
+  )
   update(
     @Param('name') name: string,
     @Body() updateCountryDto: UpdateCountryDto,
   ): UpdateCountryDto {
     if ('name' in updateCountryDto && updateCountryDto.name !== name) {
-      throw new BadRequestException(
-        "Le nom du corps de la requête ne correspond pas à celui de l'URL.",
-      );
+      throw new CountryNameMismatchException();
     }
 
     return this.countriesService.update(name, updateCountryDto);

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { countries } from './countries.data';
+import { CountryDto } from './dto/country.dto';
 import { CreateCountryDto } from './dto/create-country.dto';
 import { UpdateCountryDto } from './dto/update-country.dto';
 import { Country } from './entities/country.entity';
@@ -10,18 +11,16 @@ import { DuplicateCountryNameException } from './exceptions/duplicate-country-na
 export class CountriesService {
   private countries: Country[] = countries();
 
-  public create(createCountryDto: CreateCountryDto): CreateCountryDto {
+  public create(newCountry: CreateCountryDto): CountryDto {
     // Vérification de l'existence d'un pays avec le même nom
-    if (
-      this.countries.some((country) => country.name === createCountryDto.name)
-    ) {
-      throw new DuplicateCountryNameException(createCountryDto.name);
+    if (this.countries.some((country) => country.name === newCountry.name)) {
+      throw new DuplicateCountryNameException(newCountry.name);
     }
 
     // Ajout du pays
-    this.countries = this.countries.concat(createCountryDto);
+    this.countries = this.countries.concat(newCountry);
 
-    return createCountryDto;
+    return newCountry;
   }
 
   public findAll(): Country[] {
