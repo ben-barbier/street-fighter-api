@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CharactersService } from '../characters/characters.service';
 import { Fight } from './entities/fight.entity';
 import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
@@ -9,7 +9,10 @@ import { SameCharacterFightException } from './exceptions/same-character-fight.e
 export class FightsService {
   private fights: Fight[] = [];
 
-  constructor(private readonly charactersService: CharactersService) {}
+  constructor(
+    @Inject(forwardRef(() => CharactersService))
+    private readonly charactersService: CharactersService,
+  ) {}
 
   private verifyDifferentCharacters(
     characterOneId: string,
@@ -76,5 +79,13 @@ export class FightsService {
     characterTwoId: string,
   ): string {
     return Math.random() * 100 < 50 ? characterOneId : characterTwoId;
+  }
+
+  public isCharacterUsedInFights(characterId: string): boolean {
+    return this.fights.some(
+      (fight) =>
+        fight.characterOneId === characterId ||
+        fight.characterTwoId === characterId,
+    );
   }
 }

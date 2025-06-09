@@ -17,6 +17,7 @@ import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { CharacterIdMismatchException } from './exceptions/character-id-mismatch.exception';
 import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
+import { CharacterHasFightsExceptionFilter } from './filters/character-has-fights-exception.filter';
 import { CharacterIdMismatchExceptionFilter } from './filters/character-id-mismatch-exception.filter';
 import { CharacterNotFoundExceptionFilter } from './filters/character-not-found-exception.filter';
 import { DuplicateCharacterIdExceptionFilter } from './filters/duplicate-character-id-exception.filter';
@@ -111,9 +112,17 @@ export class CharactersController {
     status: HttpStatus.NOT_FOUND,
     description: 'Personnage non trouvé',
   })
+  @ApiResponse({
+    status: HttpStatus.CONFLICT,
+    description:
+      'Le personnage est impliqué dans des combats et ne peut pas être supprimé',
+  })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseFilters(CharacterNotFoundExceptionFilter)
+  @UseFilters(
+    CharacterNotFoundExceptionFilter,
+    CharacterHasFightsExceptionFilter,
+  )
   remove(@Param('id') id: string): void {
     return this.charactersService.remove(id);
   }

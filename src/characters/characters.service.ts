@@ -1,15 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { FightsService } from '../fights/fights.service';
 import { characters } from './characters.data';
 import { CharacterDto } from './dto/character.dto';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
 import { Character } from './entities/character.entity';
+import { CharacterHasFightsException } from './exceptions/character-has-fights.exception';
 import { CharacterNotFoundException } from './exceptions/character-not-found.exception';
 import { DuplicateCharacterIdException } from './exceptions/duplicate-character-id.exception';
 
 @Injectable()
 export class CharactersService {
   private characters: Character[] = characters();
+
+  constructor(
+    @Inject(forwardRef(() => FightsService))
+    private readonly fightsService: FightsService,
+  ) {}
 
   private generateId(name: string): string {
     return name
@@ -85,6 +92,11 @@ export class CharactersService {
     const character = this.findOne(id);
     if (!character) {
       throw new CharacterNotFoundException(id);
+    }
+
+    // Vérifier si le personnage a des combats associés avant de le supprimer
+    if (this.fightsService.isCharacterUsedInFights(id)) {
+      throw new CharacterHasFightsException(id);
     }
 
     this.characters = this.characters.filter(
