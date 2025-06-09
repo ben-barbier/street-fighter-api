@@ -78,6 +78,10 @@ export class CountriesController {
     description:
       "Le nom du corps de la requête ne correspond pas à celui de l'URL.",
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Pays non trouvé',
+  })
   @Patch(':name')
   @HttpCode(HttpStatus.NO_CONTENT)
   update(
@@ -88,6 +92,11 @@ export class CountriesController {
       throw new BadRequestException(
         "Le nom du corps de la requête ne correspond pas à celui de l'URL.",
       );
+    }
+
+    const country = this.countriesService.findOne(name);
+    if (!country) {
+      throw new NotFoundException('Pays non trouvé');
     }
 
     return this.countriesService.update(name, updateCountryDto);

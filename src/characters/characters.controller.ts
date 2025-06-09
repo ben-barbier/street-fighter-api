@@ -107,6 +107,10 @@ export class CharactersController {
     description:
       "L'identifiant du corps de la requête ne correspond pas à celui de l'URL.",
   })
+  @ApiResponse({
+    status: 404,
+    description: 'Personnage non trouvé',
+  })
   @Patch(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   update(
@@ -117,6 +121,11 @@ export class CharactersController {
       throw new BadRequestException(
         "L'identifiant du corps de la requête ne correspond pas à celui de l'URL.",
       );
+    }
+
+    const character = this.charactersService.findOne(id);
+    if (!character) {
+      throw new NotFoundException('Personnage non trouvé');
     }
 
     return this.charactersService.update(id, updateCharacterDto);
