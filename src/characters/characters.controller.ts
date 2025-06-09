@@ -28,6 +28,10 @@ export class CharactersController {
     status: 201,
     description: 'Personnage créé avec succès',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation échouée (données manquantes ou invalides)',
+  })
   @Post()
   create(@Body() createCharacterDto: CreateCharacterDto): void {
     return this.charactersService.create(createCharacterDto);

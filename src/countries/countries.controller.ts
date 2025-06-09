@@ -26,6 +26,10 @@ export class CountriesController {
     status: 201,
     description: 'Pays créé avec succès',
   })
+  @ApiResponse({
+    status: 400,
+    description: 'Validation échouée (données manquantes ou invalides)',
+  })
   @Post()
   create(@Body() createCountryDto: CreateCountryDto): void {
     return this.countriesService.create(createCountryDto);
