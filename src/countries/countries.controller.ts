@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CountriesService } from './countries.service';
 import { CountryDto } from './dto/country.dto';
 import { CreateCountryDto } from './dto/create-country.dto';
@@ -52,6 +52,11 @@ export class CountriesController {
     status: HttpStatus.NOT_FOUND,
     description: "Le pays demandé n'a pas été trouvé",
   })
+  @ApiParam({
+    name: 'name',
+    description: 'Nom du pays',
+    example: 'Japan',
+  })
   @Get(':name')
   findOne(@Param('name') name: string): CountryDto {
     const country = this.countriesService.findOne(name);
@@ -75,6 +80,11 @@ export class CountriesController {
     status: HttpStatus.NOT_FOUND,
     description: "Le pays demandé n'a pas été trouvé",
   })
+  @ApiParam({
+    name: 'name',
+    description: 'Nom du pays',
+    example: 'Japan',
+  })
   @Patch(':name')
   update(@Param('name') name: string, @Body() updateCountryDto: UpdateCountryDto): UpdateCountryDto {
     if ('name' in updateCountryDto && updateCountryDto.name !== name) {
@@ -96,6 +106,11 @@ export class CountriesController {
   @ApiResponse({
     status: HttpStatus.CONFLICT,
     description: 'Le pays est associé à des personnages et ne peut pas être supprimé',
+  })
+  @ApiParam({
+    name: 'name',
+    description: 'Nom du pays',
+    example: 'Japan',
   })
   @Delete(':name')
   @HttpCode(HttpStatus.NO_CONTENT)

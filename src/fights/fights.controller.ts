@@ -1,5 +1,5 @@
 import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateFightDto } from './dto/create-fight.dto';
 import { FightDto } from './dto/fight.dto';
 import { Fight } from './entities/fight.entity';
@@ -49,6 +49,11 @@ export class FightsController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: "Le personnage demandé n'a pas été trouvé",
+  })
+  @ApiParam({
+    name: 'characterId',
+    description: 'Identifiant unique du personnage',
+    example: 'ryu',
   })
   @Get('characters/:characterId')
   findByCharacter(@Param('characterId') characterId: string): Fight[] {

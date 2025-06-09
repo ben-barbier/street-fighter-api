@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CharactersService } from './characters.service';
 import { CharacterDto } from './dto/character.dto';
 import { CreateCharacterDto } from './dto/create-character.dto';
@@ -52,8 +52,13 @@ export class CharactersController {
     status: HttpStatus.NOT_FOUND,
     description: "Le personnage demandé n'a pas été trouvé",
   })
+  @ApiParam({
+    name: 'id',
+    description: 'Identifiant unique du personnage',
+    example: 'ryu',
+  })
   @Get(':id')
-  findOne(@Param('id') id: string): CharacterDto {
+  findOne(@Param('id') id: CharacterDto['id']): CharacterDto {
     const character = this.charactersService.findOne(id);
     if (!character) {
       throw new CharacterNotFoundException(id);
@@ -74,6 +79,11 @@ export class CharactersController {
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
     description: "Le personnage demandé n'a pas été trouvé",
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Identifiant unique du personnage',
+    example: 'ryu',
   })
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCharacterDto: UpdateCharacterDto): CharacterDto {
@@ -96,6 +106,11 @@ export class CharactersController {
   @ApiResponse({
     status: HttpStatus.CONFLICT,
     description: 'Le personnage est impliqué dans des combats et ne peut pas être supprimé',
+  })
+  @ApiParam({
+    name: 'id',
+    description: 'Identifiant unique du personnage',
+    example: 'ryu',
   })
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
