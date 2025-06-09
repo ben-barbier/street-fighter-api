@@ -11,23 +11,42 @@ import { DuplicateCharacterIdException } from './exceptions/duplicate-character-
 export class CharactersService {
   private characters: Character[] = characters();
 
-  public create(createCharacterDto: CreateCharacterDto): void {
-    // Génération de l'ID en kebab-case à partir du nom du personnage
-    const id = createCharacterDto.name
+  private generateId(name: string): string {
+    return name
       .toLowerCase()
       .replace(/\s+/g, '-')
       .replace(/[^\w-]/g, '');
+  }
 
-    // Vérification de l'existence de l'ID
-    if (this.characters.some((character) => character.id === id)) {
+  private validateId(id: string, excludeId?: string): void {
+    if (
+      this.characters.some((char) => char.id === id && char.id !== excludeId)
+    ) {
       throw new DuplicateCharacterIdException(id);
     }
+  }
+
+  public create(createCharacterDto: CreateCharacterDto): CharacterDto {
+    // Génération de l'ID en kebab-case à partir du nom du personnage
+    const id = this.generateId(createCharacterDto.name);
+
+    // Vérification de l'existence de l'ID
+    this.validateId(id);
+
+    const newCharacter: Character = { id, ...createCharacterDto };
+
+    // Décaler les personnages ayant un ordre supérieur ou égal à celui du nouveau personnage
+    this.characters = this.characters.map((character) => {
+      if (character.order >= createCharacterDto.order) {
+        return { ...character, order: character.order + 1 };
+      }
+      return character;
+    });
 
     // Ajout du personnage avec l'ID généré
-    this.characters = this.characters.concat({
-      id,
-      ...createCharacterDto,
-    });
+    this.characters = this.characters.concat(newCharacter);
+
+    return newCharacter;
   }
 
   public findAll(): Character[] {
@@ -45,6 +64,12 @@ export class CharactersService {
     const character = this.findOne(id);
     if (!character) {
       throw new CharacterNotFoundException(id);
+    }
+
+    // Si le nom est modifié, vérifier si cela générerait un ID déjà existant
+    if (updateCharacterDto.name && updateCharacterDto.name !== character.name) {
+      // Utilisation de la méthode factorisée pour vérifier le nouvel ID potentiel
+      this.validateId(this.generateId(updateCharacterDto.name), id);
     }
 
     const updatedCharacter = { ...character, ...updateCharacterDto };

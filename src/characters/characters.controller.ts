@@ -36,7 +36,7 @@ export class CharactersController {
   })
   @Post()
   @UseFilters(DuplicateCharacterIdExceptionFilter)
-  create(@Body() createCharacterDto: CreateCharacterDto): void {
+  create(@Body() createCharacterDto: CreateCharacterDto): CharacterDto {
     return this.charactersService.create(createCharacterDto);
   }
 
@@ -89,6 +89,7 @@ export class CharactersController {
   @UseFilters(
     CharacterNotFoundExceptionFilter,
     CharacterIdMismatchExceptionFilter,
+    DuplicateCharacterIdExceptionFilter,
   )
   update(
     @Param('id') id: string,
