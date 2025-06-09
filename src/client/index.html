@@ -11,22 +11,27 @@
           color: #fff2e6;
           margin: 0;
           padding: 0;
-          min-height: 100vh;
           position: relative;
       }
+
       body::before {
           content: "";
           position: fixed;
-          top: 0; left: 0; right: 0; bottom: 0;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
           background: rgba(30, 20, 40, 0.65);
           backdrop-filter: blur(2px);
           z-index: 0;
           pointer-events: none;
       }
+
       h1, ul, .swagger-link {
           position: relative;
           z-index: 1;
       }
+
       h1 {
           font-family: 'Bangers', cursive, Arial, sans-serif;
           text-align: center;
@@ -34,14 +39,14 @@
           letter-spacing: 3px;
           font-size: 3em;
           color: #ffecb3;
-          text-shadow:
-                  0 2px 0 #d32f2f,
-                  0 4px 8px #000a,
-                  2px 2px 0 #ff9800;
+          text-shadow: 0 2px 0 #d32f2f,
+          0 4px 8px #000a,
+          2px 2px 0 #ff9800;
           background: linear-gradient(90deg, #ff9800 30%, #d32f2f 70%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
       }
+
       ul {
           max-width: 520px;
           margin: 40px auto 20px auto;
@@ -52,11 +57,13 @@
           list-style: none;
           border: 2px solid #ff9800;
       }
+
       ul li {
           margin: 18px 0;
           font-size: 1.15em;
           letter-spacing: 1px;
       }
+
       a {
           color: #ff9800;
           text-decoration: none;
@@ -64,16 +71,17 @@
           transition: color 0.2s, text-shadow 0.2s;
           text-shadow: 0 1px 2px #000a;
       }
+
       a:hover {
           color: #fff2e6;
           text-shadow: 0 0 8px #d32f2f, 0 2px 8px #ff9800;
           text-decoration: underline;
       }
+
       .swagger-link {
           display: block;
           max-width: 520px;
           margin: 36px auto 0 auto;
-          padding: 24px 0;
           background: linear-gradient(90deg, #d32f2f 0%, #ff9800 100%);
           border-radius: 16px;
           text-align: center;
@@ -85,20 +93,30 @@
           letter-spacing: 2px;
           animation: pulse 2s infinite alternate;
       }
+
       .swagger-link a {
           color: #fff2e6;
           text-shadow: 0 2px 8px #d32f2f, 0 1px 2px #000a;
           font-size: 1.1em;
           text-transform: uppercase;
           letter-spacing: 2px;
+          display: block;
+          padding: 24px 0;
+
       }
+
       .swagger-link a:hover {
           color: #ffecb3;
           text-shadow: 0 0 12px #ff9800, 0 2px 8px #d32f2f;
       }
+
       @keyframes pulse {
-          0% { box-shadow: 0 4px 24px #000b, 0 0 0 4px #ff980088; }
-          100% { box-shadow: 0 8px 32px #d32f2f88, 0 0 0 8px #ff980044; }
+          0% {
+              box-shadow: 0 4px 24px #000b, 0 0 0 4px #ff980088;
+          }
+          100% {
+              box-shadow: 0 8px 32px #d32f2f88, 0 0 0 8px #ff980044;
+          }
       }
   </style>
 </head>
@@ -115,7 +133,9 @@
   <li><a href="/fights/characters/ryu">/fights/characters/{characterId}</a></li>
 </ul>
 <div class="swagger-link">
-  <a href="/api">Documentation Swagger (/api)</a>
+  <a href="/api">
+    Documentation Swagger (/api)
+  </a>
 </div>
 </body>
 </html>
