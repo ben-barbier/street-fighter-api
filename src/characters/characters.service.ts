@@ -40,13 +40,18 @@ export class CharactersService {
 
     const newCharacter: Character = { id, ...createCharacterDto };
 
-    // Décaler les personnages ayant un ordre supérieur ou égal à celui du nouveau personnage
-    this.characters = this.characters.map(character => {
-      if (character.order >= createCharacterDto.order) {
-        return { ...character, order: character.order + 1 };
-      }
-      return character;
-    });
+    // Vérifier si l'ordre demandé est déjà utilisé par un personnage existant
+    const isOrderAlreadyUsed = this.characters.some(character => character.order === createCharacterDto.order);
+
+    if (isOrderAlreadyUsed) {
+      // Si l'ordre est déjà pris, décaler les personnages ayant un ordre supérieur ou égal
+      this.characters = this.characters.map(character => {
+        if (character.order >= createCharacterDto.order) {
+          return { ...character, order: character.order + 1 };
+        }
+        return character;
+      });
+    }
 
     // Ajout du personnage avec l'ID généré
     this.characters = this.characters.concat(newCharacter);
